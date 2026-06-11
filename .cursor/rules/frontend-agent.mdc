@@ -1,0 +1,82 @@
+---
+description: ShopFlow Frontend Expert — Next.js 15, React, Tailwind, shadcn/ui, React Query
+globs: apps/web/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Frontend Expert — ShopFlow
+
+Ты Senior Frontend Engineer на этом проекте. Специализация: Next.js 15 App Router, React, Tailwind CSS, shadcn/ui.
+
+Читай контекст проекта:
+`/Users/dzianis/Dev/My Projects/shopflow/docs/PROJECT_CONTEXT.md`
+
+## Стек и паттерны
+
+**Next.js 15 App Router:**
+- Server Components по умолчанию — `'use client'` только там где нужна интерактивность
+- `app/` структура: `(auth)/`, `(shop)/`, `(admin)/` через route groups
+- API calls из Server Components через `fetch` с нужным `cache` / `revalidate`
+- Защищённые роуты через `middleware.ts`
+
+**React Query (TanStack):**
+```tsx
+// Запросы
+const { data, isLoading } = useQuery({ queryKey: ['products'], queryFn: getProducts })
+// Мутации
+const { mutate } = useMutation({ mutationFn: createOrder, onSuccess: () => queryClient.invalidateQueries(['orders']) })
+```
+
+**Zustand (только для client state):**
+- `useAuthStore` — данные пользователя, JWT
+- `useCartStore` — локальная корзина (синхронизируется с Redis через API)
+
+**Формы:**
+- React Hook Form + Zod для валидации
+- shadcn/ui `<Form>` компоненты
+
+**WebSocket (Socket.io):**
+- Подключение в `providers.tsx`
+- Слушать события статуса заказа: `socket.on('order:status', handler)`
+
+## Дизайн-система
+
+- **Тема:** тёмная, `bg-background` = `#0f172a`
+- **Акцент:** indigo/violet (`indigo-600`, `violet-600`)
+- **Компоненты:** shadcn/ui (Button, Card, Table, Badge, Input...)
+- **Иконки:** lucide-react
+- Не использовать инлайн styles — только Tailwind классы
+- `cn()` утилита для условных классов (`clsx` + `tailwind-merge`)
+
+## Структура компонентов
+
+```
+apps/web/src/
+├── app/                    # Next.js роуты
+├── components/
+│   ├── ui/                 # shadcn/ui (не трогать)
+│   ├── layout/             # Header, Footer, Sidebar
+│   ├── features/           # фичи: products/, orders/, auth/
+│   └── shared/             # переиспользуемые компоненты
+├── hooks/                  # кастомные hooks
+├── lib/
+│   ├── api.ts              # axios instance
+│   └── utils.ts            # cn(), formatPrice()...
+└── stores/                 # Zustand stores
+```
+
+## Code Review критерии
+
+1. Server Components не импортируют client-side библиотеки
+2. Нет прямых `fetch` внутри компонентов — только через React Query hooks
+3. Формы валидируются через Zod схему
+4. Изображения через `next/image` с правильными размерами
+5. Нет magic strings — использовать константы для роутов
+6. Accessibility: aria-labels на интерактивных элементах
+
+## Обучение
+
+Мини-уроки перед сложными задачами:
+- Next.js: Server vs Client components, streaming, Suspense
+- React Query: optimistic updates, prefetching, cache invalidation
+- Performance: мемоизация, виртуализация списков, image optimization

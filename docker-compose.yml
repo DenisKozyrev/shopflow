@@ -1,0 +1,179 @@
+version: "3.9"
+
+services:
+  # ── Databases ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: shopflow-postgres
+    environment:
+      POSTGRES_USER: shopflow
+      POSTGRES_PASSWORD: shopflow_dev
+      POSTGRES_DB: shopflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: shopflow-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Kafka ───────────────────────────────────────────────────────────────────
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: shopflow-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: shopflow-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: shopflow-kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+
+  # ── Services (dev) ──────────────────────────────────────────────────────────
+  api-gateway:
+    build:
+      context: .
+      dockerfile: apps/api-gateway/Dockerfile.dev
+    container_name: shopflow-api-gateway
+    ports:
+      - "3000:3000"
+    env_file: .env
+    volumes:
+      - ./apps/api-gateway:/app/apps/api-gateway
+      - ./packages:/app/packages
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    profiles: ["full"]
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: apps/auth-service/Dockerfile.dev
+    container_name: shopflow-auth-service
+    env_file: .env
+    volumes:
+      - ./apps/auth-service:/app/apps/auth-service
+      - ./packages:/app/packages
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles: ["full"]
+
+  product-service:
+    build:
+      context: .
+      dockerfile: apps/product-service/Dockerfile.dev
+    container_name: shopflow-product-service
+    env_file: .env
+    volumes:
+      - ./apps/product-service:/app/apps/product-service
+      - ./packages:/app/packages
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    profiles: ["full"]
+
+  order-service:
+    build:
+      context: .
+        dockerfile: apps/order-service/Dockerfile.dev
+    container_name: shopflow-order-service
+    env_file: .env
+    volumes:
+      - ./apps/order-service:/app/apps/order-service
+      - ./packages:/app/packages
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    profiles: ["full"]
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: apps/payment-service/Dockerfile.dev
+    container_name: shopflow-payment-service
+    env_file: .env
+    volumes:
+      - ./apps/payment-service:/app/apps/payment-service
+      - ./packages:/app/packages
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    profiles: ["full"]
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: apps/notification-service/Dockerfile.dev
+    container_name: shopflow-notification-service
+    env_file: .env
+    volumes:
+      - ./apps/notification-service:/app/apps/notification-service
+      - ./packages:/app/packages
+    depends_on:
+      kafka:
+        condition: service_healthy
+    profiles: ["full"]
+
+volumes:
+  postgres_data:
+  redis_data:
