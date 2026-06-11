@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { TokenService } from './token.service';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class AuthService {
     }
   }
 
-  async getUserById(userId: string) {
+  async getUserById(_userId: string) {
     // TODO: implement with Prisma in Sprint 1
     throw new Error('Not implemented');
   }

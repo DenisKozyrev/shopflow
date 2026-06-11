@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "echo 'proto: run proto:generate to compile types'",
     "proto:generate": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./src/generated --grpc_out=grpc_js:./src/generated --proto_path=./proto ./proto/*.proto && protoc-gen-ts --ts_out=grpc_js:./src/generated ./proto/*.proto"
   },
   "dependencies": {
