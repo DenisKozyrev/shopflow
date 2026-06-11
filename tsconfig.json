@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "commonjs",
@@ -11,13 +10,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "incremental": true,
-    "paths": {
-      "@shopflow/common": ["./packages/common/src/index.ts"],
-      "@shopflow/kafka": ["./packages/kafka/src/index.ts"],
-      "@shopflow/proto": ["./packages/proto/src/index.ts"],
-      "@shopflow/prisma": ["./packages/prisma/src/index.ts"]
-    }
-  },
-  "exclude": ["node_modules", "dist"]
+    "declaration": true,
+    "declarationMap": true
+  }
 }

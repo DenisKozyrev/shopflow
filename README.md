@@ -2,7 +2,7 @@
 
 > Modern e-commerce platform built with microservices architecture — NestJS + gRPC + Kafka + AWS + Next.js
 
-[![CI](https://github.com/YOUR_USERNAME/shopflow/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/shopflow/actions)
+[![CI](https://github.com/DenisKozyrev/shopflow/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisKozyrev/shopflow/actions)
 
 ## Architecture
 
@@ -26,21 +26,21 @@ service  service        service       service
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 15, Tailwind CSS, shadcn/ui, React Query, Zustand |
-| API Gateway | NestJS HTTP + WebSocket (Socket.io) |
+| Layer         | Technology                                                |
+| ------------- | --------------------------------------------------------- |
+| Frontend      | Next.js 15, Tailwind CSS, shadcn/ui, React Query, Zustand |
+| API Gateway   | NestJS HTTP + WebSocket (Socket.io)                       |
 | Microservices | NestJS gRPC (auth, product, order, payment, notification) |
-| Sync IPC | gRPC + Protocol Buffers |
-| Async IPC | Kafka (KafkaJS) |
-| Database | PostgreSQL + Prisma ORM |
-| Cache | Redis |
-| Storage | AWS S3 |
-| Email | AWS SES + React Email |
-| Payments | Stripe |
-| Deploy | Docker + AWS ECS Fargate |
-| CI/CD | GitHub Actions |
-| Observability | OpenTelemetry + AWS CloudWatch |
+| Sync IPC      | gRPC + Protocol Buffers                                   |
+| Async IPC     | Kafka (KafkaJS)                                           |
+| Database      | PostgreSQL + Prisma ORM                                   |
+| Cache         | Redis                                                     |
+| Storage       | AWS S3                                                    |
+| Email         | AWS SES + React Email                                     |
+| Payments      | Stripe                                                    |
+| Deploy        | Docker + AWS ECS Fargate                                  |
+| CI/CD         | GitHub Actions                                            |
+| Observability | OpenTelemetry + AWS CloudWatch                            |
 
 ## Project Structure
 
@@ -104,25 +104,25 @@ Kafka UI is available at http://localhost:8080 — inspect topics, messages, con
 
 ## Sprint Plan
 
-| Sprint | Focus | Status |
-|--------|-------|--------|
-| 1 | Foundation: Turborepo, Auth, API Gateway, gRPC | 🚧 In Progress |
-| 2 | Product Service, AWS S3, Kafka Producer | ⏳ Pending |
-| 3 | Order Service, Redis Cart, Checkout | ⏳ Pending |
-| 4 | Payment Service, Stripe Webhooks | ⏳ Pending |
-| 5 | Notifications, AWS SES, WebSockets | ⏳ Pending |
-| 6 | Admin Dashboard, RBAC, Analytics | ⏳ Pending |
-| 7 | Deploy: AWS ECS, CI/CD, OpenTelemetry | ⏳ Pending |
+| Sprint | Focus                                          | Status         |
+| ------ | ---------------------------------------------- | -------------- |
+| 1      | Foundation: Turborepo, Auth, API Gateway, gRPC | 🚧 In Progress |
+| 2      | Product Service, AWS S3, Kafka Producer        | ⏳ Pending     |
+| 3      | Order Service, Redis Cart, Checkout            | ⏳ Pending     |
+| 4      | Payment Service, Stripe Webhooks               | ⏳ Pending     |
+| 5      | Notifications, AWS SES, WebSockets             | ⏳ Pending     |
+| 6      | Admin Dashboard, RBAC, Analytics               | ⏳ Pending     |
+| 7      | Deploy: AWS ECS, CI/CD, OpenTelemetry          | ⏳ Pending     |
 
 ## Kafka Topics
 
-| Topic | Producer | Consumers |
-|-------|----------|-----------|
-| `order.created` | order-service | payment-service, notification-service |
-| `order.paid` | payment-service | order-service, notification-service |
-| `order.shipped` | order-service | notification-service |
-| `inventory.low` | product-service | notification-service |
-| `user.registered` | auth-service | notification-service |
+| Topic             | Producer        | Consumers                             |
+| ----------------- | --------------- | ------------------------------------- |
+| `order.created`   | order-service   | payment-service, notification-service |
+| `order.paid`      | payment-service | order-service, notification-service   |
+| `order.shipped`   | order-service   | notification-service                  |
+| `inventory.low`   | product-service | notification-service                  |
+| `user.registered` | auth-service    | notification-service                  |
 
 ## Contributing
 
