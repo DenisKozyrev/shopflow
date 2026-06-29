@@ -7,7 +7,7 @@ import { TokenService } from './token.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '../../.env' }),
+    ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({}), // configured per-token in TokenService
   ],
   controllers: [AuthController],

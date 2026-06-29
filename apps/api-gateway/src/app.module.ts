@@ -7,7 +7,7 @@ import { GRPC_SERVICE_TOKENS } from '@shopflow/common';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '../../.env' }),
+    ConfigModule.forRoot({ isGlobal: true }),
 
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
 
