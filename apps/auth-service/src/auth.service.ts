@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { TokenService } from './token.service';
+import { UserResponse, ValidateTokenResponse } from '@shopflow/proto/src/auth.types';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly tokenService: TokenService) {}
 
-  async validateToken(token: string) {
+  async validateToken(token: string): Promise<ValidateTokenResponse> {
     try {
       const payload = await this.tokenService.verifyAccessToken(token);
       return {
@@ -19,7 +20,7 @@ export class AuthService {
     }
   }
 
-  async getUserById(_userId: string) {
+  async getUserById(_userId: string): Promise<UserResponse> {
     // TODO: implement with Prisma in Sprint 1
     throw new Error('Not implemented');
   }
