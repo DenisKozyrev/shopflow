@@ -1,4 +1,10 @@
 import { Controller } from '@nestjs/common';
+import {
+  GetUserByIdRequest,
+  UserResponse,
+  ValidateTokenRequest,
+  ValidateTokenResponse,
+} from '@shopflow/proto';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
 
@@ -7,12 +13,12 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @GrpcMethod('AuthService', 'ValidateToken')
-  async validateToken(data: { token: string }) {
+  async validateToken(data: ValidateTokenRequest): Promise<ValidateTokenResponse> {
     return this.authService.validateToken(data.token);
   }
 
   @GrpcMethod('AuthService', 'GetUserById')
-  async getUserById(data: { userId: string }) {
+  async getUserById(data: GetUserByIdRequest): Promise<UserResponse> {
     return this.authService.getUserById(data.userId);
   }
 }
