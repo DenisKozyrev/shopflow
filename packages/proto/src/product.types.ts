@@ -1,20 +1,20 @@
-interface GetProductRequest {
+export interface GetProductRequest {
   productId: string;
 }
 
-interface GetProductsRequest {
+export interface GetProductsRequest {
   page: number;
   limit: number;
   categoryId: string;
   search: string;
 }
 
-interface GetProductsResponse {
+export interface GetProductsResponse {
   products: ProductResponse[];
   total: number;
 }
 
-interface ProductResponse {
+export interface ProductResponse {
   id: string;
   name: string;
   description: string;
@@ -25,7 +25,7 @@ interface ProductResponse {
   createdAt: string;
 }
 
-interface CreateProductRequest {
+export interface CreateProductRequest {
   name: string;
   description: string;
   price: number;
@@ -33,30 +33,19 @@ interface CreateProductRequest {
   categoryId: string;
 }
 
-interface UpdateProductRequest {
+export interface UpdateProductRequest {
   productId: string;
   name?: string;
   price?: number;
   stock?: number;
 }
 
-interface DecrementStockRequest {
+export interface DecrementStockRequest {
   productId: string;
   quantity: number;
 }
 
-interface DecrementStockResponse {
+export interface DecrementStockResponse {
   success: boolean;
   remainingStock: number;
 }
-
-export {
-  GetProductRequest,
-  GetProductsRequest,
-  GetProductsResponse,
-  ProductResponse,
-  CreateProductRequest,
-  UpdateProductRequest,
-  DecrementStockRequest,
-  DecrementStockResponse,
-};

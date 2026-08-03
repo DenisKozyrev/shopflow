@@ -1,19 +1,19 @@
-interface ValidateTokenRequest {
+export interface ValidateTokenRequest {
   token: string;
 }
 
-interface ValidateTokenResponse {
+export interface ValidateTokenResponse {
   valid: boolean;
   userId: string;
   email: string;
   role: string;
 }
 
-interface GetUserByIdRequest {
+export interface GetUserByIdRequest {
   userId: string;
 }
 
-interface UserResponse {
+export interface UserResponse {
   id: string;
   email: string;
   name: string;
@@ -21,5 +21,3 @@ interface UserResponse {
   avatarUrl: string;
   createdAt: string;
 }
-
-export { ValidateTokenRequest, ValidateTokenResponse, GetUserByIdRequest, UserResponse };

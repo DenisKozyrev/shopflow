@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TokenService } from './token.service';
-import { UserResponse, ValidateTokenResponse } from '@shopflow/proto/src/auth.types';
+import { UserResponse, ValidateTokenResponse } from '@shopflow/proto';
 
 @Injectable()
 export class AuthService {
