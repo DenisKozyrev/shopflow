@@ -4,7 +4,7 @@ import {
   UserResponse,
   ValidateTokenRequest,
   ValidateTokenResponse,
-} from '@shopflow/proto/src/auth.types';
+} from '@shopflow/proto';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
 
