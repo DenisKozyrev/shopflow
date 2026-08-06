@@ -283,18 +283,21 @@ open http://localhost:8080
 
 ### Порты
 
-| Сервис                 | Порт |
-| ---------------------- | ---- |
-| api-gateway (HTTP)     | 3000 |
-| web (Next.js)          | 3001 |
-| auth-service (gRPC)    | 5001 |
-| product-service (gRPC) | 5002 |
-| order-service (gRPC)   | 5003 |
-| payment-service (gRPC) | 5004 |
-| PostgreSQL             | 5432 |
-| Redis                  | 6379 |
-| Kafka                  | 9092 |
-| Kafka UI               | 8080 |
+| Сервис                 | Порт                       |
+| ---------------------- | -------------------------- |
+| api-gateway (HTTP)     | 3000                       |
+| web (Next.js)          | 3001                       |
+| auth-service (gRPC)    | 5001                       |
+| product-service (gRPC) | 5002                       |
+| order-service (gRPC)   | 5003                       |
+| payment-service (gRPC) | 5004                       |
+| PostgreSQL             | **5433** (в контейнере 5432) |
+| Redis                  | 6379                       |
+| Zookeeper              | 2181                       |
+| Kafka                  | 9092 (+29092 internal)     |
+| Kafka UI               | 8080                       |
+
+⚠ PostgreSQL — единственный сервис с нестандартным маппингом: `"5433:5432"` в `docker-compose.yml`, чтобы не конфликтовать с локально установленным Postgres. В `DATABASE_URL` всегда **5433**.
 
 ---
 
@@ -310,7 +313,7 @@ open http://localhost:8080
 
 ### Как запросить помощь у AI
 
-Перед каждой новой сессией в Cursor — прочитай этот файл и укажи агенту:
+Перед каждой новой сессией в Claude Code — CLAUDE.md подключается автоматически; в начале работы укажи агенту:
 
 ```
 Прочитай /Users/dzianis/Dev/My Projects/shopflow/docs/PROJECT_CONTEXT.md
@@ -326,6 +329,9 @@ open http://localhost:8080
 - **Backend Expert** — NestJS, Prisma, Kafka, AWS паттерны, gRPC
 - **Frontend Expert** — Next.js, React паттерны, производительность
 - **Code Reviewer** — review PR, объяснение паттернов, обучение
+
+Полная настройка Claude Code (CLAUDE.md, Subagents, Skills, MCP, env): [`docs/AGENTS.md`](./AGENTS.md).
+Быстрый старт сессии: `/mentor-session`.
 
 ---
 

@@ -1,15 +1,15 @@
 ---
-description: ShopFlow Frontend Expert — Next.js 15, React, Tailwind, shadcn/ui, React Query
-globs: apps/web/**/*.{ts,tsx}
-alwaysApply: false
+name: frontend-expert
+description: Senior frontend engineer for ShopFlow's Next.js 15 App Router UI — React Query, Zustand, Tailwind/shadcn, Socket.io. Use for implementing or reviewing code in apps/web, and for frontend PR code review.
+tools: Read, Grep, Glob, Bash, Edit, Write
+model: inherit
 ---
 
 # Frontend Expert — ShopFlow
 
 Ты Senior Frontend Engineer на этом проекте. Специализация: Next.js 15 App Router, React, Tailwind CSS, shadcn/ui.
 
-Читай контекст проекта:
-`/Users/dzianis/Dev/My Projects/shopflow/docs/PROJECT_CONTEXT.md`
+Читай контекст проекта: `docs/PROJECT_CONTEXT.md`
 
 ## Стек и паттерны
 

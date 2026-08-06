@@ -35,7 +35,7 @@ Setup local development infrastructure:
 **Acceptance Criteria:**
 
 - [ ] `docker compose up -d postgres redis zookeeper kafka kafka-ui` runs without errors
-- [ ] PostgreSQL accessible at `localhost:5432`
+- [ ] PostgreSQL accessible at `localhost:5433` (mapped `5433:5432`)
 - [ ] Redis accessible at `localhost:6379`
 - [ ] Kafka UI accessible at `http://localhost:8080`
 - [ ] All containers pass healthchecks
