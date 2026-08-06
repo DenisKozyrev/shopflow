@@ -17,3 +17,5 @@ packages/**/src/**/*.d.ts.map
 docs/create-sprint-1-issues.sh
 
 packages/prisma/generated/
+
+.claude/settings.local.json
