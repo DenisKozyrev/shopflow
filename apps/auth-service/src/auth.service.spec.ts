@@ -1,6 +1,5 @@
 import { Test } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
 import * as bcrypt from 'bcryptjs';
 import { KAFKA_TOPICS } from '@shopflow/kafka';
