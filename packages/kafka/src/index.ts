@@ -56,5 +56,6 @@ export interface UserRegisteredEvent {
 }
 
 export * from './kafka.config';
+export * from './kafka-env.schema';
 export * from './kafka-producer.service';
 export * from './kafka.module';
