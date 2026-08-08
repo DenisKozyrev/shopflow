@@ -2,8 +2,9 @@
 // Learn more about it: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/client"
+  provider     = "prisma-client"
+  output       = "../generated/client"
+  moduleFormat = "cjs"
 }
 datasource db {
   provider = "postgresql"

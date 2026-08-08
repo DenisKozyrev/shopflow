@@ -69,8 +69,8 @@ jobs:
         env:
           DATABASE_URL: postgresql://shopflow:shopflow_dev@localhost:5432/shopflow_test
           REDIS_URL: redis://localhost:6379
-          JWT_ACCESS_SECRET: test_access_secret
-          JWT_REFRESH_SECRET: test_refresh_secret
+          JWT_ACCESS_SECRET: test_access_secret_at_least_32_characters_long
+          JWT_REFRESH_SECRET: test_refresh_secret_at_least_32_characters_long
 
   build-docker:
     name: Build Docker Images

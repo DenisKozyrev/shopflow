@@ -19,3 +19,5 @@ docs/create-sprint-1-issues.sh
 packages/prisma/generated/
 
 .claude/settings.local.json
+
+docs/tasks/

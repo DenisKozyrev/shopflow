@@ -11,7 +11,7 @@ async function bootstrap() {
     transport: Transport.GRPC,
     options: {
       package: 'auth',
-      protoPath: join(__dirname, '../../../../packages/proto/proto/auth.proto'),
+      protoPath: join(__dirname, '../../../packages/proto/proto/auth.proto'),
       url: `0.0.0.0:${process.env.AUTH_GRPC_PORT ?? 5001}`,
     },
   });

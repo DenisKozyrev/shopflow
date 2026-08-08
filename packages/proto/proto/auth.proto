@@ -5,6 +5,8 @@ package auth;
 service AuthService {
   rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenResponse);
   rpc GetUserById (GetUserByIdRequest) returns (UserResponse);
+  rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
 }
 
 message ValidateTokenRequest {
@@ -29,4 +31,27 @@ message UserResponse {
   string role = 4;
   string avatar_url = 5;
   string created_at = 6;
+}
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  string name = 3;
+}
+
+message RegisterResponse {
+  UserResponse user = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  UserResponse user = 1;
+  string access_token = 2;
+  string refresh_token = 3;
 }

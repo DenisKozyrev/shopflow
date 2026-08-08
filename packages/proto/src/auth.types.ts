@@ -21,3 +21,26 @@ export interface UserResponse {
   avatarUrl: string;
   createdAt: string;
 }
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  name: string;
+}
+
+export interface RegisterResponse {
+  user: UserResponse;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: UserResponse;
+  accessToken: string;
+  refreshToken: string;
+}
