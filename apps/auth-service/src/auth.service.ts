@@ -21,9 +21,13 @@ const DUMMY_PASSWORD_HASH = bcrypt.hashSync('dummy-password', 10);
 
 const emailSchema = z.string().email();
 
+// bcrypt silently truncates input at 72 bytes — without a max, two different
+// passwords sharing the same first 72 bytes would hash identically.
+const passwordSchema = z.string().min(8).max(72);
+
 const registerSchema = z.object({
   email: emailSchema,
-  password: z.string().min(8),
+  password: passwordSchema,
   name: z.string(),
 });
 
@@ -47,9 +51,7 @@ export class AuthService {
     const email = this.normalizeEmail(dto.email);
     this.validate(registerSchema, { email, password, name });
 
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email },
-    });
+    const existingUser = await this.findUserByEmail(email);
 
     if (existingUser) {
       this.throwAlreadyExists();
@@ -82,11 +84,11 @@ export class AuthService {
       registeredAt: newUser.createdAt.toISOString(),
     };
 
-    try {
-      await this.kafkaProducer.emit(KAFKA_TOPICS.USER_REGISTERED, event);
-    } catch (error) {
+    // Fire-and-forget: the response doesn't depend on this succeeding, so don't
+    // make the caller wait out a Kafka round-trip for it.
+    this.kafkaProducer.emit(KAFKA_TOPICS.USER_REGISTERED, event).catch((error) => {
       this.logger.error('Failed to publish user.registered event', error);
-    }
+    });
 
     return this.buildAuthResponse(newUser, tokens);
   }
@@ -96,9 +98,7 @@ export class AuthService {
     const email = this.normalizeEmail(dto.email);
     this.validate(loginSchema, { email, password });
 
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
+    const user = await this.findUserByEmail(email);
 
     const isPasswordValid = await bcrypt.compare(
       password,
@@ -143,30 +143,44 @@ export class AuthService {
   private async generateTokenPair(
     user: Pick<User, 'id' | 'email' | 'role'>,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const [accessToken, refreshToken] = await Promise.all([
-      this.tokenService.generateAccessToken({
-        sub: user.id,
-        email: user.email,
-        role: user.role,
-      }),
-      this.tokenService.generateRefreshToken({ sub: user.id }),
-    ]);
-
+    let accessToken: string;
+    let refreshToken: string;
     try {
-      await this.prisma.refreshToken.create({
-        data: {
-          token: refreshToken,
-          userId: user.id,
-          expiresAt: this.tokenService.decodeExpiry(refreshToken),
-        },
-      });
+      [accessToken, refreshToken] = await Promise.all([
+        this.tokenService.generateAccessToken({
+          sub: user.id,
+          email: user.email,
+          role: user.role,
+        }),
+        this.tokenService.generateRefreshToken({ sub: user.id }),
+      ]);
     } catch (error) {
-      // The JWT itself is already valid and usable — losing this row only means
-      // the session can't be individually revoked later, not that login/register fails.
-      this.logger.error('Failed to persist refresh token', error);
+      // register()/login() would otherwise let a raw signing error escape as an
+      // unshaped UNKNOWN gRPC status instead of a meaningful one.
+      this.logger.error('Failed to generate tokens', error);
+      throw new RpcException({ code: status.INTERNAL, message: 'Failed to generate tokens' });
     }
 
+    // Fire-and-forget: the JWT itself is already valid and usable — losing this row
+    // only means the session can't be individually revoked later, not that login/register
+    // fails. The try/catch lives inside the async IIFE so it also catches decodeExpiry()
+    // throwing on a malformed token, not just prisma.create() rejecting.
+    void (async () => {
+      try {
+        const expiresAt = this.tokenService.decodeExpiry(refreshToken);
+        await this.prisma.refreshToken.create({
+          data: { token: refreshToken, userId: user.id, expiresAt },
+        });
+      } catch (error) {
+        this.logger.error('Failed to persist refresh token', error);
+      }
+    })();
+
     return { accessToken, refreshToken };
+  }
+
+  private async findUserByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { email } });
   }
 
   private buildAuthResponse(

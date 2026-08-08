@@ -180,11 +180,26 @@ describe('AuthService', () => {
     it.each([
       ['invalid email', { email: 'not-an-email', password: 'Test1234!', name: 'Denis' }],
       ['short password', { email: 'denis@shopflow.dev', password: 'short', name: 'Denis' }],
+      ['password over the bcrypt 72-byte limit', { email: 'denis@shopflow.dev', password: 'a'.repeat(73), name: 'Denis' }],
     ])('throws INVALID_ARGUMENT for %s', async (_case, badDto) => {
       await expect(authService.register(badDto)).rejects.toMatchObject({
         error: { code: status.INVALID_ARGUMENT },
       });
       expect(prisma.user.findUnique).not.toHaveBeenCalled();
+    });
+
+    it('wraps a token-signing failure as an internal RpcException, not the raw error', async () => {
+      const loggerSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
+      prisma.user.findUnique.mockResolvedValue(null);
+      prisma.user.create.mockResolvedValue(mockUser);
+      tokenService.generateRefreshToken.mockRejectedValue(new Error('signing key unavailable'));
+
+      await expect(authService.register(dto)).rejects.toMatchObject({
+        error: { code: status.INTERNAL },
+      });
+      expect(loggerSpy).toHaveBeenCalledWith('Failed to generate tokens', expect.any(Error));
+
+      loggerSpy.mockRestore();
     });
 
     it('persists the refresh token with its real expiry', async () => {

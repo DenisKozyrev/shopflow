@@ -8,12 +8,18 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
 
+// jsonwebtoken hands this straight to the `ms` package — a unitless value like "15"
+// parses as 15 milliseconds, not 15 seconds, so the unit must be explicit.
+const durationSchema = z
+  .string()
+  .regex(/^\d+(\.\d+)?(ms|s|m|h|d|w|y)$/, 'must be a duration with an explicit unit, e.g. "15m"');
+
 const validateSchema = z
   .object({
     JWT_ACCESS_SECRET: z.string().min(32),
     JWT_REFRESH_SECRET: z.string().min(32),
-    JWT_ACCESS_EXPIRES_IN: z.string().min(1),
-    JWT_REFRESH_EXPIRES_IN: z.string().min(1),
+    JWT_ACCESS_EXPIRES_IN: durationSchema,
+    JWT_REFRESH_EXPIRES_IN: durationSchema,
   })
   .merge(prismaEnvSchema)
   .merge(kafkaEnvSchema);
