@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export interface ValidateTokenRequest {
   token: string;
 }
@@ -43,4 +45,13 @@ export interface LoginResponse {
   user: UserResponse;
   accessToken: string;
   refreshToken: string;
+}
+
+// Shape returned by ClientGrpc.getService('AuthService') — one Observable-returning
+// method per RPC declared in auth.proto's `service AuthService { ... }` block.
+export interface AuthServiceClient {
+  register(data: RegisterRequest): Observable<RegisterResponse>;
+  login(data: LoginRequest): Observable<LoginResponse>;
+  validateToken(data: ValidateTokenRequest): Observable<ValidateTokenResponse>;
+  getUserById(data: GetUserByIdRequest): Observable<UserResponse>;
 }
