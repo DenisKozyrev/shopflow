@@ -4,6 +4,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { GRPC_SERVICE_TOKENS } from '@shopflow/common';
+import { AuthClientService } from './auth/auth-client.service';
+import { AuthController } from './auth/auth-client.controller';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { GRPC_SERVICE_TOKENS } from '@shopflow/common';
         transport: Transport.GRPC,
         options: {
           package: 'auth',
-          protoPath: join(__dirname, '../../../../packages/proto/proto/auth.proto'),
+          protoPath: join(__dirname, '../../../packages/proto/proto/auth.proto'),
           url: `localhost:${process.env.AUTH_GRPC_PORT ?? 5001}`,
         },
       },
@@ -27,7 +29,7 @@ import { GRPC_SERVICE_TOKENS } from '@shopflow/common';
         transport: Transport.GRPC,
         options: {
           package: 'product',
-          protoPath: join(__dirname, '../../../../packages/proto/proto/product.proto'),
+          protoPath: join(__dirname, '../../../packages/proto/proto/product.proto'),
           url: `localhost:${process.env.PRODUCT_GRPC_PORT ?? 5002}`,
         },
       },
@@ -36,11 +38,13 @@ import { GRPC_SERVICE_TOKENS } from '@shopflow/common';
         transport: Transport.GRPC,
         options: {
           package: 'order',
-          protoPath: join(__dirname, '../../../../packages/proto/proto/order.proto'),
+          protoPath: join(__dirname, '../../../packages/proto/proto/order.proto'),
           url: `localhost:${process.env.ORDER_GRPC_PORT ?? 5003}`,
         },
       },
     ]),
   ],
+  controllers: [AuthController],
+  providers: [AuthClientService],
 })
 export class AppModule {}
